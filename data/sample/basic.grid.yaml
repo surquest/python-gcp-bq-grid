@@ -1,0 +1,52 @@
+name: users
+desc: Table with all users
+labels:
+  company: surquest
+  application: data-services
+clustering_fields:
+  - department
+time_partitioning:
+  field: created_at
+  type: DAY
+schema:
+  - name: id
+    desc: ID of the user
+    mode: required
+    type: INTEGER
+  - name: name
+    desc: First name and last name of the user
+    mode: required
+  - name: department
+    desc: Description of the user
+  - name: height
+    desc: Height of the user in centimeters
+    type: FLOAT
+  - name: roles
+    desc: List of roles of the user
+    type: STRUCT
+    mode: repeated
+    fields:
+      - name: role
+        desc: Role of the user
+        mode: required
+      - name: description
+        desc: Description of the role
+  - name: last_login_at
+    desc: Date and time when the user last logged in
+    type: TIMESTAMP
+    mode: REQUIRED
+  - name: created_at
+    desc: Date and time when the user was created
+    type: TIMESTAMP
+    mode: NULLABLE
+    defaultValueExpression: CURRENT_TIMESTAMP()
+  - name: created_by
+    desc: User who created the user
+    type: STRING
+    mode: NULLABLE
+    defaultValueExpression: SESSION_USER()
+  - name: is_active
+    desc: Indicates if the user record is active
+    type: BOOLEAN
+    mode: NULLABLE
+    defaultValueExpression: true

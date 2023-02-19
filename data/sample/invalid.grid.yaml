@@ -1,0 +1,5 @@
+name: users
+desc: Table with all users
+labels:
+  company: surquest
+  application: data-services
