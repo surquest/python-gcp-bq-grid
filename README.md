@@ -109,7 +109,7 @@ grid.drop() # drop table in BigQuery
 
 Following python script create BigQuery table as shown in following screenshot:
 
-![BigQuery Table](https://github.com/surquest/python-gcp-bq-grid/blob/6f7a67b14038feb904888e09f5b3cbd77834bc45/assets/img/bq.table.png)
+![BigQuery Table](https://github.com/surquest/python-gcp-bq-grid/blob/main/assets/img/bq.table.png?raw=true)
 
 
 # Local development
