@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "surquest-GCP-bq-grid"
-version = "0.0.1rc6"
+version = "0.0.1rc7"
 description = "Wrapper around Google Cloud Platform BigQuery client to simplify management of the BigQuery tables."
 authors = [
     {name= "Michal Švarc", email= "michal.svarc@surquest.com"}

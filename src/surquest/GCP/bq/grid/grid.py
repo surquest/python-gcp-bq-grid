@@ -179,7 +179,10 @@ class Grid:
             job_config=job_config
         )
 
-        load_job.result()
+        try:
+            load_job.result()
+        except BaseException:
+            pass
 
         return load_job
 
