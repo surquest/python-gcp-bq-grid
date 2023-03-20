@@ -179,7 +179,9 @@ class Grid:
             job_config=job_config
         )
 
-        return load_job.result()
+        load_job.result()
+
+        return load_job
 
 
     def set_table(self, config):
