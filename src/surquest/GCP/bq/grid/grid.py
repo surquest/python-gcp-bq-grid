@@ -149,10 +149,27 @@ class Grid:
 
         query_job.result()
 
-    def load_jsonl(self, blob_uri, mode=bigquery.WriteDisposition.WRITE_APPEND):
+
+    def import_data(self, blob_uri, mode=bigquery.WriteDisposition.WRITE_APPEND):
+        """Import data from blob to the BigQuery table.
+
+        :param blob_uri: URI of the blob
+        :type blob_uri: str
+        :param mode: mode of the import
+        :type mode: google.cloud.bigquery.job.WriteDisposition
+        :return: instance of BigQuery job
+        :rtype: google.cloud.bigquery.job.QueryJob
+        """
+
+        if blob_uri.endswith(".csv"):
+            source_format=bigquery.SourceFormat.CSV
+        elif blob_uri.endswith(".jsonl"):
+            source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+        else:
+            raise ValueError("File format not supported.")
 
         job_config = bigquery.LoadJobConfig(
-            source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+            source_format=source_format,
             write_disposition=mode
         )
 
@@ -162,7 +179,8 @@ class Grid:
             job_config=job_config
         )
 
-        load_job.result()
+        return load_job.result()
+
 
     def set_table(self, config):
         """Returns instance of BigQuery table from specification.
@@ -242,3 +260,54 @@ class Grid:
             config = yaml.load(f, Loader=yaml.FullLoader)
 
         return config
+
+    @staticmethod
+    def get_markdown_table(
+            schema,
+            columns={
+            "name": None,
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "desc": None,
+            "fields": None,
+            "defaultValueExpression": None,
+        }
+    ):
+        """Returns Markdown table from BigQuery schema.
+
+        :param schema: BigQuery schema
+        :type schema: list
+        :param columns: dictionary with column names as keys and default values as values
+        :type columns: dict
+        :return: Markdown table
+        :rtype: str
+        """
+
+        values = []
+
+        for field in schema:
+
+            record = []
+            for attr in columns.keys():
+                val = field.get(attr)
+                if isinstance(val, (int, bool, float, str)):
+                    record.append(str(val))
+                elif isinstance(val, type(None)):
+                    if columns.get(attr) is None:
+                        record.append("")
+                    else:
+                        record.append(columns.get(attr))
+                else:
+                    record.append(F"```{yaml.dump(val)}```")
+            values.append(record)
+
+        table_header = F"| {' | '.join(columns.keys())} |"
+        table_line = F"| {' | '.join(['---'] * len(columns.keys()))} |"
+        table_rows = [F"| {' | '.join(row)} |" for row in values]
+        table = F"\n{table_header}\n{table_line}\n" + "\n".join(table_rows)
+
+        return table
+
+
+
+
